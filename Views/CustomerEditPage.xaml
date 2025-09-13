@@ -7,7 +7,7 @@
     <VerticalStackLayout Padding="20" Spacing="12">
         <Entry Placeholder="Nome" Text="{Binding Model.Name}" MaxLength="100" />
         <Entry Placeholder="Sobrenome" Text="{Binding Model.Lastname}" MaxLength="100" />
-        <Entry Placeholder="Idade" Text="{Binding AgeText}" MaxLength="100">
+        <Entry Placeholder="Idade" Text="{Binding AgeText}" MaxLength="3">
             <Entry.Behaviors>
                 <toolkit:NumericValidationBehavior Flags="ValidateOnValueChanged" MinimumValue="0" />
             </Entry.Behaviors>

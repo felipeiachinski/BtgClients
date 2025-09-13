@@ -1,10 +1,11 @@
 using Microsoft.Maui;
 using Microsoft.Maui.Controls;
+using Microsoft.Maui.LifecycleEvents;
 using BtgClients.Views;
-
 #if WINDOWS
 using Microsoft.UI.Windowing;
 using Microsoft.Maui.Platform;
+using Microsoft.Maui.Devices;
 #endif
 
 namespace BtgClients;
@@ -21,9 +22,7 @@ public partial class App : Application
 
     protected override Window CreateWindow(IActivationState? activationState)
     {
-        var nav = new NavigationPage(_rootPage);
-
-        var window = new Window(nav)
+        var window = new Window(_rootPage)
         {
             Title = "BTG Clients"
         };
@@ -37,7 +36,6 @@ public partial class App : Application
                 p.Maximize(); // abre maximizado
         };
 #endif
-
         return window;
     }
 }

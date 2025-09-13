@@ -21,8 +21,8 @@ public partial class CustomerEditViewModel : ObservableObject
         _isNew = isNew;
         Model = model;
         AgeText = isNew
-            ? string.Empty
-            : (Model.Age > 0 ? Model.Age.ToString() : string.Empty);
+        ? string.Empty
+        : (Model.Age > 0 ? Model.Age.ToString() : string.Empty);
     }
 
     [RelayCommand]
@@ -31,43 +31,36 @@ public partial class CustomerEditViewModel : ObservableObject
     [RelayCommand]
     private async Task Save()
     {
-        var currentPage = Application.Current?.MainPage?.Navigation?
-                                  .NavigationStack.LastOrDefault()
-                      ?? Application.Current?.MainPage;
+        var page = Application.Current!.Windows[0].Page;
 
         if (string.IsNullOrWhiteSpace(Model.Name))
         {
-            if (currentPage != null)
-                await currentPage.DisplayAlert("Atenção!", "Entre com o nome do cliente.", "OK");
+            await page.DisplayAlert("Atenção!", "Entre com o nome do cliente.", "OK");
             return;
         }
 
         if (string.IsNullOrWhiteSpace(Model.Lastname))
         {
-            if (currentPage != null)
-                await currentPage.DisplayAlert("Atenção!", "Entre com o sobrenome do cliente.", "OK");
+            await page.DisplayAlert("Atenção!", "Entre com o sobrenome do cliente.", "OK");
             return;
         }
 
         if (!int.TryParse(AgeText, out var age) || age < 0)
         {
-            if (currentPage != null)
-                await currentPage.DisplayAlert("Atenção!", "Entre com uma idade válida para o cliente.", "OK");
+            await page.DisplayAlert("Atenção!", "Entre com uma idade válida para o cliente.", "OK");
             return;
         }
 
         if (string.IsNullOrWhiteSpace(Model.Address))
         {
-            if (currentPage != null)
-                await currentPage.DisplayAlert("Atenção!", "Entre com o endereço do cliente.", "OK");
+            await page.DisplayAlert("Atenção!", "Entre com o endereço do cliente.", "OK");
             return;
         }
 
         Model.Age = age;
         if (_isNew) _repo.Add(Model); else _repo.Update(Model);
-        if (_repo is JsonCustomerRepository)
-            await _repo.SaveAsync();
 
         CloseRequested?.Invoke();
     }
+
 }

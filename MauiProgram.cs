@@ -17,8 +17,8 @@ public static class MauiProgram
             .UseMauiApp<App>()
             .UseMauiCommunityToolkit();
 
-        // Services / Repos (Persistência de dados)
-        builder.Services.AddSingleton<ICustomerRepository, JsonCustomerRepository>();
+        // Services / Repos
+        builder.Services.AddSingleton<ICustomerRepository, InMemoryCustomerRepository>();
 
         // VMs
         builder.Services.AddSingleton<CustomersViewModel>();
