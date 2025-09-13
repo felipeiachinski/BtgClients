@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="BtgClients.Views.CustomerEditPage"
+             Title="Cliente">
+    <VerticalStackLayout Padding="20" Spacing="12">
+        <Entry Placeholder="Nome" Text="{Binding Model.Name}" MaxLength="100" />
+        <Entry Placeholder="Sobrenome" Text="{Binding Model.Lastname}" MaxLength="100" />
+        <Entry Placeholder="Idade" Text="{Binding AgeText}" MaxLength="100">
+            <Entry.Behaviors>
+                <toolkit:NumericValidationBehavior Flags="ValidateOnValueChanged" MinimumValue="0" />
+            </Entry.Behaviors>
+        </Entry>
+        <Entry Placeholder="Endereço" Text="{Binding Model.Address}" MaxLength="200"/>
+
+        <HorizontalStackLayout Spacing="12" HorizontalOptions="End">
+            <Button Text="Cancelar" Command="{Binding CancelCommand}" />
+            <Button Text="Salvar" Command="{Binding SaveCommand}" />
+        </HorizontalStackLayout>
+    </VerticalStackLayout>
+</ContentPage>
