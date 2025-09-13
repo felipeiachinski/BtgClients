@@ -9,11 +9,18 @@ public partial class CustomerEditPage : ContentPage
         InitializeComponent();
         BindingContext = vm;
 
-        vm.CloseRequested += () =>
+        vm.CloseRequested += async () =>
         {
+            if (Navigation?.NavigationStack?.Contains(this) == true)
+            {
+                await Navigation.PopAsync();
+                return;
+            }
+
             var w = this.Window;
             if (w is not null)
-                Application.Current!.CloseWindow(w);
+                Application.Current?.CloseWindow(w);
         };
     }
 }
+

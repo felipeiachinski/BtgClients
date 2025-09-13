@@ -22,11 +22,8 @@ public partial class CustomersViewModel : ObservableObject
         _sp = sp;
     }
 
-    [RelayCommand]
-    private void New() => OpenEditWindow(new Customer(), isNew: true);
-
-    [RelayCommand]
-    private void Edit(Customer c) => OpenEditWindow(c, isNew: false);
+    [RelayCommand] private void New() => OpenEditWindow(null, true);
+    [RelayCommand] private void Edit(Customer c) => OpenEditWindow(c, false);
 
     [RelayCommand]
     private async Task Delete(Customer c)
@@ -36,31 +33,27 @@ public partial class CustomersViewModel : ObservableObject
             _repo.Remove(c);
     }
 
-    private void OpenEditWindow(Customer customer, bool isNew)
+    private void OpenEditWindow(Customer? customer, bool isNew)
     {
-        var vm = _sp.GetRequiredService<CustomerEditViewModel>();
         var page = _sp.GetRequiredService<CustomerEditPage>();
+        var vm = (CustomerEditViewModel)page.BindingContext;
 
-        vm.Initialize(customer, isNew, _repo);
-        page.BindingContext = vm;
+        vm.Initialize(customer ?? new Customer(), isNew, _repo);
 
-        var child = new Window(page)
+        WireAlerts(page, vm);
+
+        Application.Current!.OpenWindow(new Window(page));
+    }
+
+    private static void WireAlerts(CustomerEditPage page, CustomerEditViewModel vm)
+    {
+        Func<string, Task> handler = async (msg) =>
         {
-            Title = isNew ? "Novo Cliente" : "Editar Cliente",
-            Width = 600,
-            Height = 420
+            await page.DisplayAlert("Atenção!", msg, "OK");
         };
 
-#if WINDOWS
-        child.Created += (_, __) =>
-        {
-            var info = Microsoft.Maui.Devices.DeviceDisplay.Current.MainDisplayInfo;
-            var w = info.Width / info.Density;
-            var h = info.Height / info.Density;
-            child.X = (w - child.Width) / 2;
-            child.Y = (h - child.Height) / 2;
-        };
-#endif
-        Application.Current!.OpenWindow(child);
+        vm.InvalidRequested += handler;
+
+        page.Disappearing += (_, __) => vm.InvalidRequested -= handler;
     }
 }

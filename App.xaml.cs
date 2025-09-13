@@ -22,7 +22,9 @@ public partial class App : Application
 
     protected override Window CreateWindow(IActivationState? activationState)
     {
-        var window = new Window(_rootPage)
+        var nav = new NavigationPage(_rootPage);
+
+        var window = new Window(nav)
         {
             Title = "BTG Clients"
         };
@@ -33,9 +35,10 @@ public partial class App : Application
             var winui = (MauiWinUIWindow)window.Handler.PlatformView;
             var appW = winui.AppWindow;
             if (appW.Presenter is OverlappedPresenter p)
-                p.Maximize(); // abre maximizado
+                p.Maximize();
         };
 #endif
         return window;
     }
 }
+

@@ -20,9 +20,7 @@ public partial class CustomerEditViewModel : ObservableObject
         _repo = repo;
         _isNew = isNew;
         Model = model;
-        AgeText = isNew
-        ? string.Empty
-        : (Model.Age > 0 ? Model.Age.ToString() : string.Empty);
+        AgeText = isNew ? string.Empty : (Model.Age > 0 ? Model.Age.ToString() : string.Empty);
     }
 
     [RelayCommand]
@@ -31,30 +29,21 @@ public partial class CustomerEditViewModel : ObservableObject
     [RelayCommand]
     private async Task Save()
     {
-        var page = Application.Current!.Windows[0].Page;
-
         if (string.IsNullOrWhiteSpace(Model.Name))
         {
-            await page.DisplayAlert("Atenção!", "Entre com o nome do cliente.", "OK");
-            return;
+            await OnInvalidAsync("Entre com o nome do cliente."); return;
         }
-
         if (string.IsNullOrWhiteSpace(Model.Lastname))
         {
-            await page.DisplayAlert("Atenção!", "Entre com o sobrenome do cliente.", "OK");
-            return;
+            await OnInvalidAsync("Entre com o sobrenome do cliente."); return;
         }
-
         if (!int.TryParse(AgeText, out var age) || age < 0)
         {
-            await page.DisplayAlert("Atenção!", "Entre com uma idade válida para o cliente.", "OK");
-            return;
+            await OnInvalidAsync("Entre com uma idade válida para o cliente."); return;
         }
-
         if (string.IsNullOrWhiteSpace(Model.Address))
         {
-            await page.DisplayAlert("Atenção!", "Entre com o endereço do cliente.", "OK");
-            return;
+            await OnInvalidAsync("Entre com o endereço do cliente."); return;
         }
 
         Model.Age = age;
@@ -63,4 +52,7 @@ public partial class CustomerEditViewModel : ObservableObject
         CloseRequested?.Invoke();
     }
 
+    public event Func<string, Task>? InvalidRequested;
+    private Task OnInvalidAsync(string msg) => InvalidRequested?.Invoke(msg) ?? Task.CompletedTask;
 }
+
